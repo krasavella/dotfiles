@@ -29,7 +29,15 @@ Add your monitor settings to `~/.config/niri/local.kdl`. When installing over an
 
 The installer backs up affected files to `$XDG_STATE_HOME/dotfiles/backups/` before writing any changes. The default location is `~/.local/state/dotfiles/backups/`. The installer prints the exact backup path.
 
+
 ~~~bash
 ./install.sh --restore /path/to/backup --dry-run
 ./install.sh --restore /path/to/backup
 ~~~
+
+# Screenshots
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ec6d4b84-08db-4769-9da7-f54622e405f7" />
+<img width="1920" height="1080" alt="1795103359675638330" src="https://github.com/user-attachments/assets/58e41aa5-a14a-4f8e-897f-7a0a9b8cae91" />
+<img width="1920" height="1080" alt="1795103365563997733" src="https://github.com/user-attachments/assets/5f06998a-ce2e-4f72-b0db-e68faafbca4b" />
+
+
