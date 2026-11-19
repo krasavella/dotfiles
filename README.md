@@ -1,6 +1,6 @@
 # Dux dotfiles
 
-An Arch Linux setup with Niri and Dux Modular Shell. It includes Gruvbox, the Dux bar and island, a wallpaper, a contrast tweak, and Ghostty as the terminal. Nothing Audio is available in a separate repository.
+An Arch Linux setup with Niri and Dux Modular Shell. It includes Gruvbox, the Dux bar and island, a wallpaper, a contrast tweak, and Ghostty as the terminal.
 
 ## Installation
 
