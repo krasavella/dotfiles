@@ -1,35 +1,35 @@
 # Dux dotfiles
 
-Конфигурация для Arch Linux с Niri и Dux Modular Shell. В комплекте Gruvbox, панель и остров Dux, обои, правка контраста и Ghostty как терминал. Nothing Audio устанавливается из отдельного репозитория.
+An Arch Linux setup with Niri and Dux Modular Shell. It includes Gruvbox, the Dux bar and island, a wallpaper, a contrast tweak, and Ghostty as the terminal. Nothing Audio is available in a separate repository.
 
-## Установка
+## Installation
 
-Запускай от обычного пользователя, желательно из TTY.
+Run the installer as a regular user, preferably from a TTY.
 
 ~~~bash
 ./install.sh --dry-run
 ./install.sh
 ~~~
 
-Если нужны пакеты, установщик вызовет `sudo pacman -Syu --needed`. Если зависимости уже установлены, можно выполнить `./install.sh --files-only`. После установки выбери **Niri** на экране входа или запусти `niri-session` из TTY.
+If any packages are missing, the installer runs `sudo pacman -Syu --needed`. If the dependencies are already installed, use `./install.sh --files-only`. After installation, select **Niri** on the login screen or run `niri-session` from a TTY.
 
-| Клавиши | Действие |
+| Shortcut | Action |
 | --- | --- |
 | `Super+T` | Ghostty |
-| `Super+D` | Запуск приложений |
-| `Super+F1` | Сочетания клавиш |
-| `Super+Shift+T` | Настройки оформления Dux |
-| `Super+Alt+L` | Блокировка Dux |
-| `Super+Ctrl+C` | Центр управления |
-| `Super+Ctrl+V` | Буфер обмена |
-| `Print` / `Ctrl+Print` / `Alt+Print` | Скриншот области / экрана / окна |
-| `Shift+Print` | Скопировать исходный PNG как файл |
+| `Super+D` | Open the app launcher |
+| `Super+F1` | Show keyboard shortcuts |
+| `Super+Shift+T` | Open Dux appearance settings |
+| `Super+Alt+L` | Lock the screen |
+| `Super+Ctrl+C` | Open Control Center |
+| `Super+Ctrl+V` | Open clipboard history |
+| `Print` / `Ctrl+Print` / `Alt+Print` | Capture a region / screen / window |
+| `Shift+Print` | Copy the original PNG as a file |
 
-Свои параметры мониторов можно добавить в `~/.config/niri/local.kdl`. При установке поверх существующего сеанса Dux оставляет его обои и другие данные в `session.json`. Виджеты установленных локальных плагинов сохраняются при обновлении конфигурации.
+Add your monitor settings to `~/.config/niri/local.kdl`. When installing over an existing Dux setup, the installer preserves the wallpaper and other session data in `session.json`. Configuration updates also preserve widgets from installed local plugins.
 
-Перед записью установщик сохраняет затронутые файлы в `$XDG_STATE_HOME/dotfiles/backups/`. По умолчанию это `~/.local/state/dotfiles/backups/`. Точный путь появится в выводе.
+The installer backs up affected files to `$XDG_STATE_HOME/dotfiles/backups/` before writing any changes. The default location is `~/.local/state/dotfiles/backups/`. The installer prints the exact backup path.
 
 ~~~bash
-./install.sh --restore /путь/к/копии --dry-run
-./install.sh --restore /путь/к/копии
+./install.sh --restore /path/to/backup --dry-run
+./install.sh --restore /path/to/backup
 ~~~
