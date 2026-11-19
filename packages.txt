@@ -1,0 +1,6 @@
+# Desktop and terminal
+niri dux-shell xwayland-satellite ghostty xdg-desktop-portal-gnome xdg-desktop-portal-gtk
+gnome-keyring brightnessctl wl-clipboard libnotify orca thunar
+pipewire pipewire-audio pipewire-pulse wireplumber upower
+ttf-jetbrains-mono-nerd otf-geist-mono-nerd ttf-nunito noto-fonts noto-fonts-emoji
+adwaita-icon-theme adwaita-cursors matugen python

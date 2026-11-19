@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+/target/
+/vendor/earctl/target/
+*.swp
+*.bak*
+*~
+.env
+.env.*
+*.pem
+*.key
+*.sqlite*
+*.log
+/backups/
+/.local/
+/.config/

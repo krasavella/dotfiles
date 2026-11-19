@@ -1,0 +1,51 @@
+#!/usr/bin/python3
+"""Copy the newest native Niri PNG as a file, without decoding or re-encoding it."""
+
+import argparse
+from pathlib import Path
+import struct
+import subprocess
+import sys
+
+
+def notify(title, body):
+    try:
+        subprocess.run(["notify-send", title, body], timeout=5, check=False)
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--info", action="store_true", help="Show the source file without changing the clipboard")
+    args = parser.parse_args()
+    folder = Path.home() / "Pictures/Screenshots"
+    files = [p for p in folder.glob("*.png") if p.is_file()]
+    if not files:
+        raise ValueError("Сначала сделай скриншот клавишей PrintScreen.")
+    source = max(files, key=lambda p: p.stat().st_mtime_ns)
+    with source.open("rb") as stream:
+        header = stream.read(33)
+    if len(header) != 33 or header[:16] != b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR":
+        raise ValueError("Последний скриншот не является корректным PNG.")
+    width, height = struct.unpack(">II", header[16:24])
+    if args.info:
+        print(f"{source}\nPNG {width}×{height}, {source.stat().st_size} bytes\n{source.as_uri()}")
+        return
+    # Offer the original file, not an image preview or a decoded QImage.
+    subprocess.run(
+        ["wl-copy", "--type", "text/uri-list"],
+        input=(source.as_uri() + "\r\n").encode("utf-8"),
+        check=True,
+        timeout=10,
+    )
+    notify("Исходный PNG скопирован как файл", f"{source.name} · {width}×{height}\nПри отправке выбери «Без сжатия» / «Как файл».")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (OSError, ValueError, subprocess.SubprocessError) as error:
+        print(f"screenshot-copy-original: {error}", file=sys.stderr)
+        notify("Не удалось скопировать PNG-файл", str(error))
+        sys.exit(1)

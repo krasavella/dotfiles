@@ -1,0 +1,348 @@
+// Default terminal for applications launched by Niri.
+environment {
+    TERMINAL "ghostty"
+}
+
+// X11 apps: let Niri start and supervise the installed satellite on demand.
+xwayland-satellite {
+    path "/usr/bin/xwayland-satellite"
+}
+
+// ==RULES==
+
+prefer-no-csd
+window-rule {
+    geometry-corner-radius 6 // Rounding
+    clip-to-geometry true
+}
+
+// ==INPUT==
+input {
+    focus-follows-mouse max-scroll-amount="0%"
+    keyboard {
+        repeat-delay 275
+	xkb {
+            layout "us,ru"
+            options "grp:alt_shift_toggle"
+	}
+    }
+
+    mouse {
+        // off
+        // natural-scroll
+        // accel-speed 1
+        // accel-profile "flat"
+         scroll-factor 1.5
+        // scroll-factor vertical=1.0 horizontal=-2.0
+        // scroll-method "no-scroll"
+        // scroll-button 273
+        // scroll-button-lock
+        // left-handed
+        // middle-emulation
+    }
+}
+
+cursor {
+    hide-after-inactive-ms 2500
+}
+
+// ==DISPLAY AND LAYOUT==
+// Outputs use their preferred mode by default.
+include "local.kdl" optional=true
+
+layout {
+    gaps 16
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+    background-color "transparent"
+    focus-ring {
+        off
+        width 4
+
+        active-color "#7fc8ff"
+        inactive-color "#505050"
+    }
+
+    border {
+        on
+        width 2
+        active-color "#F0F0F0"
+        inactive-color "#A1A1A1"
+        urgent-color "#9b0000"
+    }
+
+    shadow {
+        softness 30
+        spread 5
+        offset x=0 y=5
+        color "#0007"
+    }
+}
+
+spawn-at-startup "systemctl" "--user" "start" "dms.service"
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+window-rule {
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    default-column-width {}
+}
+
+window-rule {
+    match app-id=r#"chromium$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+window-rule {
+    match app-id="^steam$"
+    open-floating true
+    default-column-width { fixed 1200; }
+    default-window-height { fixed 800; }
+    default-floating-position x=0 y=0
+}
+
+/-window-rule {
+    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
+    match app-id=r#"^org\.gnome\.World\.Secrets$"#
+    block-out-from "screen-capture"
+}
+
+window-rule {
+    match app-id=r#"^dev\.duxlabs\.shell$"#
+    open-floating true
+    default-column-width { proportion 0.5; }
+}
+
+/-window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+
+//==BINDS==
+binds {
+    Mod+F1 repeat=false hotkey-overlay-title="Шпаргалка сочетаний клавиш" { spawn "dms" "ipc" "call" "keybinds" "toggle" "niri"; }
+
+    Mod+Shift+T hotkey-overlay-title="Темы и автоподбор" { spawn "dms" "ipc" "call" "settings" "openWith" "personalization"; }
+
+    Super+Ctrl+V hotkey-overlay-title="clipboard" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+
+    Mod+T hotkey-overlay-title="Open a Terminal: Ghostty" { spawn "ghostty"; }
+    Mod+D hotkey-overlay-title="Run an App Launcher:" { spawn "dms" "ipc" "call" "launcher" "toggle"; }
+    Super+Alt+L hotkey-overlay-title="Блокировка Dux" { spawn "dms" "ipc" "call" "lock" "lock"; }
+    Super+Ctrl+C hotkey-overlay-title="Control center" { spawn "dms" "ipc" "call" "control-center" "toggle"; }
+
+    Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
+
+    XF86AudioRaiseVolume { spawn "dms" "ipc" "call" "audio" "increment" "5"; }
+    XF86AudioLowerVolume { spawn "dms" "ipc" "call" "audio" "decrement" "5"; }
+    XF86AudioMute { spawn "dms" "ipc" "call" "audio" "mute"; }
+
+    XF86AudioPlay        repeat=false allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
+    XF86AudioPause       repeat=false allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "pause"; }
+    XF86AudioStop        repeat=false allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "stop"; }
+    XF86AudioPrev        repeat=false allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "previous"; }
+    XF86AudioNext        repeat=false allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "next"; }
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+
+    Mod+O repeat=false { toggle-overview; }
+
+    Mod+Q repeat=false { close-window; }
+
+    // ==FOCUS BINDS==
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+    Mod+L     { focus-column-right; }
+
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Right { focus-monitor-right; }
+    Mod+Shift+H     { focus-monitor-left; }
+    Mod+Shift+J     { focus-monitor-down; }
+    Mod+Shift+K     { focus-monitor-up; }
+    Mod+Shift+L     { focus-monitor-right; }
+
+    Mod+Page_Down      { focus-workspace-down; }
+    Mod+Page_Up        { focus-workspace-up; }
+    Mod+U              { focus-workspace-down; }
+    Mod+I              { focus-workspace-up; }
+
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+
+    //==MOVING BINDS==
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+H     { move-column-left; }
+    Mod+Ctrl+J     { move-window-down; }
+    Mod+Ctrl+K     { move-window-up; }
+    Mod+Ctrl+L     { move-column-right; }
+
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Ctrl+U         { move-column-to-workspace-down; }
+    Mod+Ctrl+I         { move-column-to-workspace-up; }
+
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+
+    Mod+Shift+U         { move-workspace-down; }
+    Mod+Shift+I         { move-workspace-up; }
+
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+    Mod+Shift+6 { move-window-to-workspace 6; }
+    Mod+Shift+7 { move-window-to-workspace 7; }
+    Mod+Shift+8 { move-window-to-workspace 8; }
+    Mod+Shift+9 { move-window-to-workspace 9; }
+
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
+// ==WHEEL BINDS==
+    Mod+WheelScrollRight      { focus-column-right; }
+    Mod+WheelScrollLeft       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+// ==WORKSPACE BINDS==
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+
+    Mod+Comma  { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+
+    Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-column-width-back; }
+
+    Mod+Ctrl+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R { reset-window-height; }
+
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+
+    Mod+M { maximize-window-to-edges; }
+
+    Mod+Ctrl+F { expand-column-to-available-width; }
+
+    Mod+C { center-column; }
+
+    Mod+Ctrl+C { center-visible-columns; }
+
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+
+    Mod+W { toggle-column-tabbed-display; }
+
+    // Native PNG capture preserves the selected physical pixels without resizing.
+    Print repeat=false hotkey-overlay-title="Скриншот области (PNG)" { screenshot; }
+    Ctrl+Print repeat=false hotkey-overlay-title="Скриншот экрана (PNG)" { screenshot-screen write-to-disk=true; }
+    Alt+Print repeat=false hotkey-overlay-title="Скриншот окна (PNG)" { screenshot-window write-to-disk=true; }
+    Shift+Print repeat=false hotkey-overlay-title="Копировать последний скриншот как PNG-файл" { spawn "@@KDL:bin/screenshot-copy-original@@"; }
+
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+    Mod+Shift+E { quit; }
+    Ctrl+Alt+Delete { quit; }
+
+    Mod+Shift+P { power-off-monitors; }
+}
+
+window-rule {
+    match app-id=r#"(?i)^(kitty|com\.mitchellh\.ghostty|thunar|org\.xfce\.thunar)$"#
+    draw-border-with-background false
+}
+
+// VLC: open like Super+F (maximized column).
+window-rule {
+    match app-id=r#"^vlc$"#
+    open-maximized true
+    open-maximized-to-edges false
+    open-fullscreen false
+}
+
+
+// Base blur color/noise; Dux supplies its strength through dms/layout.kdl.
+blur {
+    passes 3
+    offset 2.5
+    noise 0.003
+    saturation 1.0
+}
+
+// Dux controls blur and Xray for its own surfaces.
+
+// Steam desktop notifications: bottom-right, without taking keyboard focus.
+window-rule {
+    match app-id=r#"^steam$"# title=r#"^notificationtoasts_\d+_desktop$"#
+    open-floating true
+    open-focused false
+    default-floating-position x=16 y=16 relative-to="bottom-right"
+}
+
+
+
+// DMS Include Configs
+include "dms/layout.kdl"
